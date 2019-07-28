@@ -1,14 +1,19 @@
 {
   "name": "instant-replay",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Instantly build a REPL playground from your dependencies",
   "repository": "https://github.com/jakemckown/instant-replay",
   "author": "Jake McKown <jbmckown@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "replay": "node ./bin/replay.js",
+    "repl": "node ./bin/repl.js"
+  },
   "bin": {
     "replay": "./bin/replay.js"
   },
   "dependencies": {
+    "find-up": "^4.1.0",
     "yargs": "^13.3.0"
   }
 }
