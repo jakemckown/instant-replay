@@ -80,7 +80,7 @@ $ node ./bin/repl.js
 #### Load dependency
 ```
 > load('faker')
-undefined
+'+faker'
 > faker.name.firstName()
 'Jake'
 >
@@ -89,7 +89,7 @@ undefined
 #### Load dependency with alias
 ```
 > load('lodash', '_')
-undefined
+'+_'
 > _.add(1, 2)
 3
 > lodash.add(1, 2)
@@ -101,16 +101,16 @@ ReferenceError: lodash is not defined
 #### Load Node modules
 ```
 > load('fs')
-undefined
+'+fs'
 > load('path')
-undefined
+'+path'
 >
 ```
 
 #### Unload dependencies/modules
 ```
 > unload('faker', '_', 'fs', 'path')
-undefined
+'-faker, -_, -fs, -path'
 >
 ```
 

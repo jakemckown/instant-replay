@@ -48,16 +48,24 @@ const repl = require('repl').start()
 function load (dep, alias) {
   alias = alias || dep
   repl.context[alias] = require(dep)
+
+  return '+' + alias
 }
 
 function unload () {
-  const args = Array.prototype.slice.call(arguments)
+  if (arguments.length) {
+    const args = Array.prototype.slice.call(arguments)
 
-  args.forEach((dep) => {
-    if (repl.context[dep]) {
-      delete repl.context[dep]
-    }
-  })
+    args.forEach((dep) => {
+      if (repl.context[dep]) {
+        delete repl.context[dep]
+      }
+    })
+
+    return '-' + args.join(', -')
+  } else {
+    return ''
+  }
 }
 
 Object.defineProperty(repl.context, 'deps', {
