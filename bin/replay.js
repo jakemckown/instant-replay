@@ -28,14 +28,20 @@ const ROOT = path.dirname(pkgPath)
 var output = path.join(ROOT, argv.output || './bin/repl.js')
 
 const deps = []
+const devDeps = []
 
 for (const dep in pkg.dependencies) {
   deps.push(dep)
 }
 
+for (const devDep in pkg.devDependencies) {
+  devDeps.push(devDep)
+}
+
 const replText =`'use strict'
 
 const deps = ['${deps.join("','")}']
+const devDeps = ['${devDeps.join("','")}']
 
 const repl = require('repl').start()
 
@@ -44,15 +50,21 @@ function load (dep, alias) {
   repl.context[alias] = require(dep)
 }
 
-function unload (dep) {
-  if (repl.context[dep]) {
-    delete repl.context[dep]
-  }
+function unload () {
+  arguments.forEach((dep) => {
+    if (repl.context[dep]) {
+      delete repl.context[dep]
+    }
+  })
 }
 
 Object.defineProperty(repl.context, 'deps', {
   enumerable: true,
   get: () => deps.slice()
+})
+Object.defineProperty(repl.context, 'devDeps', {
+  enumerable: true,
+  get: () => devDeps.slice()
 })
 Object.defineProperty(repl.context, 'load', {
   enumerable: true,
