@@ -5,6 +5,11 @@
   "repository": "https://github.com/jakemckown/instant-replay",
   "author": "Jake McKown <jbmckown@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "repl",
+    "playground",
+    "prototyping"
+  ],
   "scripts": {
     "replay": "node ./bin/replay.js",
     "repl": "node ./bin/repl.js"
