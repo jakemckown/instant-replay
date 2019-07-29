@@ -91,9 +91,18 @@ ReferenceError: lodash is not defined
 >
 ```
 
-#### Unload dependencies
+#### Load Node modules
 ```
-> unload('faker', '_')
+> load('fs')
+undefined
+> load('path')
+undefined
+>
+```
+
+#### Unload dependencies/modules
+```
+> unload('faker', '_', 'fs', 'path')
 undefined
 >
 ```
