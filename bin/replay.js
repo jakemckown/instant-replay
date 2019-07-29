@@ -33,24 +33,43 @@ for (const dep in pkg.dependencies) {
   deps.push(dep)
 }
 
-const replText =`
+const replText =`'use strict'
+
 const deps = ['${deps.join("','")}']
 
 const repl = require('repl').start()
 
-function load (dep) {
-  repl.context[dep] = require(dep)
+function load (dep, alias) {
+  alias = alias || dep
+  repl.context[alias] = require(dep)
 }
 
 function unload (dep) {
-  delete repl.context[dep]
+  if (repl.context[dep]) {
+    delete repl.context[dep]
+  }
 }
 
-repl.context.deps = deps
-repl.context.load = load
-repl.context.unload = unload
-repl.context.exit = process.exit
-repl.context.quit = process.exit
+Object.defineProperty(repl.context, 'deps', {
+  enumerable: true,
+  get: () => deps.slice()
+})
+Object.defineProperty(repl.context, 'load', {
+  enumerable: true,
+  value: load
+})
+Object.defineProperty(repl.context, 'unload', {
+  enumerable: true,
+  value: unload
+})
+Object.defineProperty(repl.context, 'exit', {
+  enumerable: true,
+  get: () => process.exit(0)
+})
+Object.defineProperty(repl.context, 'quit', {
+  enumerable: true,
+  get: () => repl.context.exit
+})
 `
 
 fs.writeFile(output, replText, (error) => {
