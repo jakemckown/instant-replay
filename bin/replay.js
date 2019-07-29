@@ -51,7 +51,9 @@ function load (dep, alias) {
 }
 
 function unload () {
-  arguments.forEach((dep) => {
+  const args = Array.prototype.slice.call(arguments)
+
+  args.forEach((dep) => {
     if (repl.context[dep]) {
       delete repl.context[dep]
     }
