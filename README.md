@@ -70,6 +70,13 @@ $ node ./bin/repl.js
 >
 ```
 
+#### See available devDependencies
+```
+> devDeps
+[ '' ]
+>
+```
+
 #### Load dependency
 ```
 > load('faker')
