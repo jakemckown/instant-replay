@@ -2,18 +2,6 @@
 <p align="center">REPL playground, built instantly from your dependencies</p>
 <br>
 
-## Installation
-
-#### NPM
-```
-$ npm i -D instant-replay
-```
-
-#### Yarn
-```
-$ yarn add --dev instant-replay
-```
-
 ## Usage
 
 ### Command
@@ -24,7 +12,7 @@ $ node_modules/.bin/replay [options]
 
 ### Script
 
-#### `package.json`
+`package.json`
 ```json
 {
   "scripts": {
@@ -124,4 +112,16 @@ or
 ```
 > quit
 $
+```
+
+## Installation
+
+#### NPM
+```
+$ npm i -D instant-replay
+```
+
+#### Yarn
+```
+$ yarn add -D instant-replay
 ```
