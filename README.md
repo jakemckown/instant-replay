@@ -1,5 +1,5 @@
 <h1 align="center">Instant REPLay</h1>
-<p align="center">Instantly build a REPL playground from your dependencies</p>
+<p align="center">REPL playground, built instantly from your dependencies</p>
 <br>
 
 ## Installation
