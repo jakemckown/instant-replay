@@ -5,6 +5,10 @@
   "repository": "https://github.com/jakemckown/instant-replay",
   "author": "Jake McKown <jbmckown@gmail.com>",
   "license": "MIT",
+  "type": "module",
+  "files": [
+    "bin/replay.js"
+  ],
   "keywords": [
     "repl",
     "playground",
@@ -18,7 +22,6 @@
     "replay": "./bin/replay.js"
   },
   "dependencies": {
-    "find-up": "^4.1.0",
-    "yargs": "^13.3.0"
+    "find-up": "^7.0.0"
   }
 }

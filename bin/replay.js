@@ -1,99 +1,84 @@
-#!/usr/bin/env node
+import {readFile, writeFile} from 'fs/promises';
+import path from 'path';
+import {findUpSync} from 'find-up';
 
-const argv = require('yargs')
-  .alias({
-    'v': 'version',
-    'h': 'help',
-    'o': 'output'
-  })
-  .boolean(['version', 'help'])
-  .string('output')
-  .describe('output', 'Specify output file (default is "./bin/repl.js")')
-  .argv
-
-const fs = require('fs')
-const path = require('path')
-const findUp = require('find-up')
-
-// The root folder of this package
-const PACKAGE_ROOT = path.dirname(findUp.sync('package.json'))
-
-// The package.json file of the consumer of this package
-const pkgPath = findUp.sync('package.json', { cwd: PACKAGE_ROOT })
-const pkg = require(pkgPath)
-
-// The root folder of the consumer of this package
-const ROOT = path.dirname(pkgPath)
-
-var output = path.join(ROOT, argv.output || './bin/repl.js')
-
-const deps = []
-const devDeps = []
+const pkgRoot = path.dirname(findUpSync('package.json'));
+const pkgPath = findUpSync('package.json', {cwd: pkgRoot});
+const pkg = JSON.parse(await readFile(pkgPath));
+const deps = [];
+const devDeps = [];
 
 for (const dep in pkg.dependencies) {
-  deps.push(dep)
+  deps.push(dep);
 }
 
 for (const devDep in pkg.devDependencies) {
-  devDeps.push(devDep)
+  devDeps.push(devDep);
 }
 
-const replText =`'use strict'
+const replText =`const deps = ['${deps.join("','")}'];
+const devDeps = ['${devDeps.join("','")}'];
+const repl = (await import('repl')).start();
 
-const deps = ['${deps.join("','")}']
-const devDeps = ['${devDeps.join("','")}']
+function load(dep, alias) {
+  alias = alias || dep;
 
-const repl = require('repl').start()
+  import(dep).then(dep => {
+    repl.context[alias] = dep;
+  });
 
-function load (dep, alias) {
-  alias = alias || dep
-  repl.context[alias] = require(dep)
-
-  return '+' + alias
+  return '+' + alias;
 }
 
-function unload () {
-  if (arguments.length) {
-    const args = Array.prototype.slice.call(arguments)
-
-    args.forEach((dep) => {
+function unload(...args) {
+  if (args.length) {
+    args.forEach(dep => {
       if (repl.context[dep]) {
-        delete repl.context[dep]
+        delete repl.context[dep];
       }
-    })
+    });
 
-    return '-' + args.join(', -')
+    return '-' + args.join(', -');
   } else {
-    return ''
+    return '';
   }
 }
 
 Object.defineProperty(repl.context, 'deps', {
   enumerable: true,
   get: () => deps.slice()
-})
+});
+
 Object.defineProperty(repl.context, 'devDeps', {
   enumerable: true,
   get: () => devDeps.slice()
-})
+});
+
 Object.defineProperty(repl.context, 'load', {
   enumerable: true,
   value: load
-})
+});
+
 Object.defineProperty(repl.context, 'unload', {
   enumerable: true,
   value: unload
-})
+});
+
 Object.defineProperty(repl.context, 'exit', {
   enumerable: true,
   get: () => process.exit(0)
-})
+});
+
 Object.defineProperty(repl.context, 'quit', {
   enumerable: true,
   get: () => repl.context.exit
-})
-`
+});
+`;
 
-fs.writeFile(output, replText, (error) => {
-  if (error) { throw error }
-})
+writeFile(
+  path.join(
+    path.dirname(pkgPath),
+    './bin/repl.js'
+  ),
+  replText
+);
